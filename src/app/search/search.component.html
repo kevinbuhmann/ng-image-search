@@ -1,0 +1,22 @@
+<form bp="margin-bottom" [formGroup]="form">
+  <mat-form-field bp="full-width">
+    <input matInput type="text" placeholder="Search" [formControlName]="controlNames.searchTerm" />
+  </mat-form-field>
+</form>
+
+<ng-container *ngIf="searchResults | async; let searchResults; else loading">
+  <div *ngIf="searchResults.photos.length; else noResults" bp="grid 6 4@sm 3@md" class="photo-gallery">
+    <img *ngFor="let photo of searchResults.photos" class="photo-gallery__thumbnail" bp="full-width" [src]="photo.thumbnailUrl" />
+  </div>
+</ng-container>
+
+<ng-template #loading>
+  <app-loading message="Searching..."></app-loading>
+</ng-template>
+
+<ng-template #noResults>
+  <p>
+    Sorry, nothing found for
+    <strong>{{(searchResults | async).searchTerm}}</strong>. Please try another search term.
+  </p>
+</ng-template>
