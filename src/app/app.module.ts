@@ -2,15 +2,23 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatInputModule, MatProgressSpinnerModule, MatToolbarModule } from '@angular/material';
+import { MatButtonModule, MatCardModule, MatInputModule, MatProgressSpinnerModule, MatToolbarModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxInViewportModule } from '@ngx-lite/in-viewport';
+import { HttpRetryModule } from '@ngx-utilities/http-retry';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { internalServerErrorInterceptorProvider } from './core/http-interceptors/internal-server-errror.interceptor';
+import { networkErrorRetryStrategyProvider } from './core/http-retry-strategies/network-error.retry-strategy';
+import { serverUnavailableRetryStrategyProvider } from './core/http-retry-strategies/server-unavailable.retry-strategy';
 import { LoadingComponent } from './loading/loading.component';
 import { SearchComponent } from './search/search.component';
+
+const httpInterceptorProviders = [internalServerErrorInterceptorProvider];
+
+const httpRetryStrategyProviders = [networkErrorRetryStrategyProvider, serverUnavailableRetryStrategyProvider];
 
 @NgModule({
   declarations: [AppComponent, LoadingComponent, SearchComponent],
@@ -21,12 +29,15 @@ import { SearchComponent } from './search/search.component';
     HttpClientModule,
     ReactiveFormsModule,
     NgxInViewportModule,
+    HttpRetryModule.forRoot(),
+    MatButtonModule,
+    MatCardModule,
     MatInputModule,
     MatProgressSpinnerModule,
     MatToolbarModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [...httpInterceptorProviders, ...httpRetryStrategyProviders],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

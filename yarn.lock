@@ -234,6 +234,12 @@
   dependencies:
     tslib "^1.9.0"
 
+"@ngx-utilities/http-retry@0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@ngx-utilities/http-retry/-/http-retry-0.0.3.tgz#041c8bf38f4d6519def5b8c2c1babd0a78a0499b"
+  dependencies:
+    tslib "^1.9.0"
+
 "@schematics/angular@0.6.8":
   version "0.6.8"
   resolved "https://registry.yarnpkg.com/@schematics/angular/-/angular-0.6.8.tgz#a8d1afc33e77160296b0a8b3d02f0ee4dfe9d1d2"
