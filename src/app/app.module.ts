@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule, MatProgressSpinnerModule, MatToolbarModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxInViewportModule } from '@ngx-lite/in-viewport';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -19,6 +20,7 @@ import { SearchComponent } from './search/search.component';
     BrowserAnimationsModule,
     HttpClientModule,
     ReactiveFormsModule,
+    NgxInViewportModule,
     MatInputModule,
     MatProgressSpinnerModule,
     MatToolbarModule,

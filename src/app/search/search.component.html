@@ -8,6 +8,10 @@
   <div *ngIf="searchResults.photos.length; else noResults" bp="grid 6 4@sm 3@md" class="photo-gallery">
     <img *ngFor="let photo of searchResults.photos" class="photo-gallery__thumbnail" bp="full-width" [src]="photo.thumbnailUrl" />
   </div>
+
+  <app-loading *ngIf="searchResults.total > searchResults.photos.length" message="Loading more photos..." ngxInViewport [offset]="1000"
+    (inViewport)="loadMoreResults($event.value)">
+  </app-loading>
 </ng-container>
 
 <ng-template #loading>

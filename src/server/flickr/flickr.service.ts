@@ -17,12 +17,13 @@ const baseApiRequestQueryString: QueryString = {
 export class FlickrService {
   constructor(private readonly httpService: HttpService) {}
 
-  search(searchTerm: string) {
+  search(searchTerm: string, page: number) {
     const requestQueryString: QueryString = {
       ...baseApiRequestQueryString,
       method: 'flickr.photos.search',
       text: searchTerm,
-      sort: 'relevance'
+      sort: 'relevance',
+      page
     };
 
     return this.httpService

@@ -2,10 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { debounceTime, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { of, BehaviorSubject, Observable } from 'rxjs';
+import { debounceTime, map, scan, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 
 import { FlickrSearchResults } from './../../server/flickr/flickr.dtos';
+import { toQueryString, QueryString } from './../../server/helpers/api.helpers';
 
 const controlNames = {
   searchTerm: 'searchTerm'
@@ -19,6 +20,7 @@ interface Photo {
 
 interface SearchResults {
   searchTerm: string;
+  total: number;
   photos: Photo[];
 }
 
@@ -32,6 +34,9 @@ export class SearchComponent {
   readonly searchResults: Observable<SearchResults>;
 
   readonly controlNames = controlNames;
+
+  private loadingResults = false;
+  private readonly loadResultsPage = new BehaviorSubject<void>(undefined);
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -48,6 +53,12 @@ export class SearchComponent {
     this.searchResults = this.getSearchResults(initialSearchTerm).pipe(shareReplay(1));
   }
 
+  loadMoreResults(inViewport: boolean) {
+    if (inViewport && !this.loadingResults) {
+      this.loadResultsPage.next(undefined);
+    }
+  }
+
   private getSearchResults(initialSearchTerm: string) {
     return this.form.controls[controlNames.searchTerm].valueChanges.pipe(
       debounceTime(500),
@@ -55,12 +66,37 @@ export class SearchComponent {
       tap(searchTerm => {
         this.router.navigate(['/search', ...(searchTerm ? [searchTerm] : [])]);
       }),
-      switchMap(searchTerm => this.search(searchTerm).pipe(startWith<SearchResults>(undefined)))
+      switchMap(searchTerm => this.searchWithPagination(searchTerm).pipe(startWith<SearchResults>(undefined)))
     );
   }
 
-  private search(searchTerm: string) {
-    return this.httpClient.get<FlickrSearchResults>(`/api/flickr/search?q=${encodeURIComponent(searchTerm || undefined)}`).pipe(
+  private searchWithPagination(searchTerm: string) {
+    return this.loadResultsPage.pipe(
+      scan<number>(page => page + 1, 0),
+      switchMap(page => this.loadSearchResults(searchTerm, page)),
+      scan((current, next) => {
+        const combinedSearchResults: SearchResults = {
+          searchTerm,
+          total: current.total,
+          photos: [...current.photos, ...next.photos]
+        };
+
+        return combinedSearchResults;
+      })
+    );
+  }
+
+  private loadSearchResults(searchTerm: string, page: number) {
+    const searchQueryString: QueryString = {
+      q: searchTerm || 'undefined',
+      page
+    };
+
+    return of(undefined).pipe(
+      tap(() => {
+        this.loadingResults = true;
+      }),
+      switchMap(() => this.httpClient.get<FlickrSearchResults>(`/api/flickr/search?${toQueryString(searchQueryString)}`)),
       map(results => {
         const photos = results.photos.photo.map<Photo>(photo => ({
           title: photo.title,
@@ -68,9 +104,12 @@ export class SearchComponent {
           thumbnailUrl: `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_m.jpg`
         }));
 
-        const searchResults: SearchResults = { searchTerm, photos };
+        const searchResults: SearchResults = { searchTerm, total: +results.photos.total, photos };
 
         return searchResults;
+      }),
+      tap(() => {
+        this.loadingResults = false;
       })
     );
   }

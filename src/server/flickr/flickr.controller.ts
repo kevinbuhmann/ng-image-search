@@ -7,7 +7,7 @@ export class FlickrController {
   constructor(private readonly flickrService: FlickrService) {}
 
   @Get('/search')
-  search(@Query('q') searchTerm: string) {
-    return this.flickrService.search(searchTerm);
+  search(@Query('q') searchTerm: string, @Query('page') page: string) {
+    return this.flickrService.search(searchTerm, +page);
   }
 }
