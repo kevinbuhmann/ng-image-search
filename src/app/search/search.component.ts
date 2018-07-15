@@ -31,9 +31,11 @@ interface SearchResults {
 })
 export class SearchComponent {
   readonly form: FormGroup;
-  readonly searchResults: Observable<SearchResults>;
+  searchResults: Observable<SearchResults>;
 
   readonly controlNames = controlNames;
+
+  showError = false;
 
   private loadingResults = false;
   private readonly loadResultsPage = new BehaviorSubject<void>(undefined);
@@ -59,6 +61,11 @@ export class SearchComponent {
     }
   }
 
+  tryAgain() {
+    this.searchResults = this.getSearchResults(this.form.controls[controlNames.searchTerm].value);
+    this.showError = false;
+  }
+
   private getSearchResults(initialSearchTerm: string) {
     return this.form.controls[controlNames.searchTerm].valueChanges.pipe(
       debounceTime(500),
@@ -66,7 +73,10 @@ export class SearchComponent {
       tap(searchTerm => {
         this.router.navigate(['/search', ...(searchTerm ? [searchTerm] : [])]);
       }),
-      switchMap(searchTerm => this.searchWithPagination(searchTerm).pipe(startWith<SearchResults>(undefined)))
+      switchMap(searchTerm => this.searchWithPagination(searchTerm).pipe(startWith<SearchResults>(undefined))),
+      tap(undefined, () => {
+        this.showError = true;
+      })
     );
   }
 
