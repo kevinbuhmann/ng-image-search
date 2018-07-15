@@ -8,6 +8,18 @@
 
 <div bp="padding">
   <main bp="container">
-    <router-outlet></router-outlet>
+    <router-outlet *ngIf="!(showNetworkError | async); else networkError"></router-outlet>
   </main>
 </div>
+
+<ng-template #networkError>
+  <mat-card>
+    <mat-card-title>
+      An error occurred.
+    </mat-card-title>
+    <mat-card-content>
+      Something went wrong. Please try again.
+    </mat-card-content>
+    <button mat-raised-button color="primary" type="button" (click)="tryAgain()">Try again</button>
+  </mat-card>
+</ng-template>
