@@ -3,6 +3,7 @@
     "node_modules/codelyzer",
     "tslint-consistent-codestyle"
   ],
+  "defaultSeverity": "warning",
   "rules": {
     // core tslint rules
     "adjacent-overload-signatures": true,
