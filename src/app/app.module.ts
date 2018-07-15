@@ -9,6 +9,7 @@ import { NgxInViewportModule } from '@ngx-lite/in-viewport';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { retryInterceptorProvider } from './core/http-interceptors/retry.interceptor';
 import { LoadingComponent } from './loading/loading.component';
 import { SearchComponent } from './search/search.component';
 
@@ -28,7 +29,7 @@ import { SearchComponent } from './search/search.component';
     MatToolbarModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [retryInterceptorProvider],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

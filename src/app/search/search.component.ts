@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of, throwError, BehaviorSubject, Observable } from 'rxjs';
-import { debounceTime, delay, map, retryWhen, scan, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { of, BehaviorSubject, Observable } from 'rxjs';
+import { debounceTime, map, scan, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 
 import { FlickrSearchResults } from './../../server/flickr/flickr.dtos';
 import { toQueryString, QueryString } from './../../server/helpers/api.helpers';
@@ -107,7 +107,6 @@ export class SearchComponent {
         this.loadingResults = true;
       }),
       switchMap(() => this.httpClient.get<FlickrSearchResults>(`/api/flickr/search?${toQueryString(searchQueryString)}`)),
-      retryWhen(errors => errors.pipe(switchMap((error, index) => (index < 3 ? of(undefined).pipe(delay(2000)) : throwError(error))))),
       map(flickrSearchResults => convertSearchResults(searchTerm, flickrSearchResults)),
       tap(() => {
         this.loadingResults = false;
