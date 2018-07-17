@@ -97,20 +97,22 @@ export class SearchComponent {
         this.loadingResults = true;
       }),
       switchMap(() => this.httpClient.get<FlickrSearchResults>(`/api/flickr/search?${toQueryString(searchQueryString)}`)),
-      map(results => {
-        const photos = results.photos.photo.map<Photo>(photo => ({
-          title: photo.title,
-          url: `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}.jpg`,
-          thumbnailUrl: `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_m.jpg`
-        }));
-
-        const searchResults: SearchResults = { searchTerm, total: +results.photos.total, photos };
-
-        return searchResults;
-      }),
+      map(flickrSearchResults => convertSearchResults(searchTerm, flickrSearchResults)),
       tap(() => {
         this.loadingResults = false;
       })
     );
   }
+}
+
+function convertSearchResults(searchTerm: string, flickrSearchResults: FlickrSearchResults) {
+  const photos = flickrSearchResults.photos.photo.map<Photo>(photo => ({
+    title: photo.title,
+    url: `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}.jpg`,
+    thumbnailUrl: `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_m.jpg`
+  }));
+
+  const searchResults: SearchResults = { searchTerm, total: +flickrSearchResults.photos.total, photos };
+
+  return searchResults;
 }
