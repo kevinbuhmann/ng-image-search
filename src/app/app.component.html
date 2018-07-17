@@ -8,30 +8,6 @@
 
 <div bp="padding">
   <main bp="container">
-    <ng-container [ngSwitch]="currentView | async">
-      <mat-card *ngSwitchCase="View.ConnectionLost">
-        <mat-card-title>
-          Connection Lost
-        </mat-card-title>
-        <mat-card-content>
-          Please check your Internet connection and try again.
-        </mat-card-content>
-
-        <button mat-raised-button color="primary" (click)="resetAllNetworkErrors()">Try Again</button>
-      </mat-card>
-
-      <mat-card *ngSwitchCase="View.ServerError">
-        <mat-card-title>
-          Server Error
-        </mat-card-title>
-        <mat-card-content>
-          The server encountered an error or is temporarily unavailable. Please try again later.
-        </mat-card-content>
-
-        <button mat-raised-button color="primary" (click)="resetAllNetworkErrors()">Try Again</button>
-      </mat-card>
-
-      <router-outlet *ngSwitchCase="View.Content"></router-outlet>
-    </ng-container>
+    <router-outlet></router-outlet>
   </main>
 </div>

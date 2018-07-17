@@ -24,7 +24,6 @@
     "@nestjs/common": "5.1.0",
     "@nestjs/core": "5.1.0",
     "@ngx-lite/in-viewport": "0.0.3",
-    "@ngx-utilities/http-retry": "0.0.3",
     "blueprint-css": "3.0.0-beta.5",
     "core-js": "2.5.7",
     "normalize.css": "8.0.0",
