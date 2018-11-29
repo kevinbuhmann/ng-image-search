@@ -10,7 +10,7 @@ export class ServerUnavailableRetryStrategy implements HttpRequestRetryStrategy 
 
   constructor(private readonly networkStatusService: NetworkStatusService) {}
 
-  delayFn() {
+  delayFn(_retryNumber: number) {
     return 3000;
   }
 
