@@ -43,7 +43,8 @@ export class FlickrService {
       method: 'flickr.photos.search',
       text: searchTerm,
       sort: 'relevance',
-      page
+      page,
+      safe_search: '1'
     };
 
     return this.httpService
