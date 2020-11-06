@@ -2,7 +2,7 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { map } from 'rxjs/operators';
 
 import { FlickrSearchResults, FlickrService } from './../services/flickr.service';
-import { ImageSearchResults, Photo } from './image-search.dtos';
+import { Image, ImageSearchResults } from './image-search.dtos';
 
 @Controller('api/image-search')
 export class ImageSearchController {
@@ -17,13 +17,13 @@ export class ImageSearchController {
 }
 
 function convertSearchResults(searchTerm: string, page: number, flickrSearchResults: FlickrSearchResults) {
-  const photos = flickrSearchResults.photos.photo.map<Photo>(photo => ({
+  const images = flickrSearchResults.photos.photo.map<Image>(photo => ({
     title: photo.title,
     url: `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}.jpg`,
     thumbnailUrl: `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_m.jpg`
   }));
 
-  const searchResults: ImageSearchResults = { searchTerm, page, total: +flickrSearchResults.photos.total, photos };
+  const searchResults: ImageSearchResults = { searchTerm, page, total: +flickrSearchResults.photos.total, images };
 
   return searchResults;
 }

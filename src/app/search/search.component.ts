@@ -67,7 +67,7 @@ export class SearchComponent {
           searchTerm,
           page: undefined,
           total: current.total,
-          photos: [...current.photos, ...next.photos]
+          images: [...current.images, ...next.images]
         };
 
         return combinedSearchResults;
