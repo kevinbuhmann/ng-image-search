@@ -11,6 +11,9 @@ export interface Image {
   title: string;
   url: string;
   thumbnailUrl: string;
+  datetaken: string;
+  owner: string;
+  views: number;
   licenseId: number;
 }
 

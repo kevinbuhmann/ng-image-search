@@ -29,6 +29,9 @@ export interface FlickrSearchResults {
       ispublic: number;
       isfriend: number;
       isfamily: number;
+      datetaken: string;
+      ownername: string;
+      views: string;
       license: string;
     }[];
   };
@@ -48,7 +51,7 @@ export class FlickrService {
       page,
       safe_search: '1',
       license: licenseIds ? licenseIds.join() : undefined,
-      extras: 'license'
+      extras: 'datetaken,owner_name,views,license'
     };
 
     return this.httpService

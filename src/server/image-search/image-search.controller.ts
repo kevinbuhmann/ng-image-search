@@ -35,6 +35,9 @@ function convertSearchResults(searchTerm: string, page: number, flickrSearchResu
     title: photo.title,
     url: `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}.jpg`,
     thumbnailUrl: `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_m.jpg`,
+    datetaken: photo.datetaken,
+    owner: photo.ownername,
+    views: +photo.views,
     licenseId: +photo.license
   }));
 
