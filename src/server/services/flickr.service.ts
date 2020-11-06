@@ -3,7 +3,6 @@ import { map } from 'rxjs/operators';
 
 import { environmentVariables } from './../environment-variables';
 import { toQueryString, QueryString } from './../helpers/api.helpers';
-import { FlickrSearchResults } from './flickr.dtos';
 
 const apiRoot = 'https://api.flickr.com/services/rest/';
 
@@ -12,6 +11,27 @@ const baseApiRequestQueryString: QueryString = {
   nojsoncallback: '1',
   api_key: environmentVariables.flickrApiKey
 };
+
+export interface FlickrSearchResults {
+  photos: {
+    page: number;
+    pages: number;
+    perpage: number;
+    total: string;
+    photo: {
+      id: string;
+      owner: string;
+      secret: string;
+      server: string;
+      farm: number;
+      title: string;
+      ispublic: number;
+      isfriend: number;
+      isfamily: number;
+    }[];
+  };
+  stat: string;
+}
 
 @Injectable()
 export class FlickrService {

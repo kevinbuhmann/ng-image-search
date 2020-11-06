@@ -3,26 +3,14 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, BehaviorSubject, Observable } from 'rxjs';
-import { debounceTime, map, scan, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, scan, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 
-import { FlickrSearchResults } from './../../server/flickr/flickr.dtos';
 import { toQueryString, QueryString } from './../../server/helpers/api.helpers';
+import { ImageSearchResults } from './../../server/image-search/image-search.dtos';
 
 const controlNames = {
   searchTerm: 'searchTerm'
 };
-
-interface Photo {
-  title: string;
-  url: string;
-  thumbnailUrl: string;
-}
-
-interface SearchResults {
-  searchTerm: string;
-  total: number;
-  photos: Photo[];
-}
 
 @Component({
   selector: 'app-search',
@@ -31,7 +19,7 @@ interface SearchResults {
 })
 export class SearchComponent {
   readonly form: FormGroup;
-  readonly searchResults: Observable<SearchResults>;
+  readonly searchResults: Observable<ImageSearchResults>;
 
   readonly controlNames = controlNames;
 
@@ -66,7 +54,7 @@ export class SearchComponent {
       tap(searchTerm => {
         this.router.navigate(['/search', ...(searchTerm ? [searchTerm] : [])]);
       }),
-      switchMap(searchTerm => this.searchWithPagination(searchTerm).pipe(startWith<SearchResults>(undefined)))
+      switchMap(searchTerm => this.searchWithPagination(searchTerm).pipe(startWith<ImageSearchResults>(undefined)))
     );
   }
 
@@ -75,8 +63,9 @@ export class SearchComponent {
       scan<number>(page => page + 1, 0),
       switchMap(page => this.loadSearchResults(searchTerm, page)),
       scan((current, next) => {
-        const combinedSearchResults: SearchResults = {
+        const combinedSearchResults: ImageSearchResults = {
           searchTerm,
+          page: undefined,
           total: current.total,
           photos: [...current.photos, ...next.photos]
         };
@@ -96,23 +85,10 @@ export class SearchComponent {
       tap(() => {
         this.loadingResults = true;
       }),
-      switchMap(() => this.httpClient.get<FlickrSearchResults>(`/api/flickr/search?${toQueryString(searchQueryString)}`)),
-      map(flickrSearchResults => convertSearchResults(searchTerm, flickrSearchResults)),
+      switchMap(() => this.httpClient.get<ImageSearchResults>(`/api/image-search?${toQueryString(searchQueryString)}`)),
       tap(() => {
         this.loadingResults = false;
       })
     );
   }
-}
-
-function convertSearchResults(searchTerm: string, flickrSearchResults: FlickrSearchResults) {
-  const photos = flickrSearchResults.photos.photo.map<Photo>(photo => ({
-    title: photo.title,
-    url: `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}.jpg`,
-    thumbnailUrl: `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_m.jpg`
-  }));
-
-  const searchResults: SearchResults = { searchTerm, total: +flickrSearchResults.photos.total, photos };
-
-  return searchResults;
 }

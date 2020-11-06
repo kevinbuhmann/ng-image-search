@@ -1,11 +1,11 @@
 import { HttpModule, Module } from '@nestjs/common';
 
-import { FlickrController } from './flickr/flickr.controller';
-import { FlickrService } from './flickr/flickr.service';
+import { ImageSearchController } from './image-search/image-search.controller';
+import { FlickrService } from './services/flickr.service';
 
 @Module({
   imports: [HttpModule],
-  controllers: [FlickrController],
+  controllers: [ImageSearchController],
   providers: [FlickrService]
 })
 export class ServerModule {}
