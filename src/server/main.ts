@@ -7,6 +7,7 @@ import { staticFileHandlerWithFallback } from './static-files';
 async function bootstrap() {
   const app = await NestFactory.create(ServerModule);
 
+  app.enableCors({ origin: '*', methods: 'GET' });
   app.use(staticFileHandlerWithFallback);
   await app.listen(environmentVariables.port);
 }
