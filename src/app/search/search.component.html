@@ -8,6 +8,9 @@
       <mat-option *ngFor="let sortOption of sortOptions" [value]="sortOption.sort">{{sortOption.label}}</mat-option>
     </mat-select>
   </mat-form-field>
+  <div>
+    <mat-checkbox *ngFor="let licenseControl of $any(form.controls[controlNames.license]).controls; let licenseId = index" [formControl]="licenseControl">{{imageLicenses[licenseId].name}}</mat-checkbox>
+  </div>
 </form>
 
 <ng-container *ngIf="searchResults | async; let searchResults; else loading">
@@ -27,6 +30,6 @@
 <ng-template #noResults>
   <p>
     Sorry, nothing found for
-    <strong>{{(searchResults | async).searchTerm}}</strong>. Please try another search term.
+    <strong>{{(searchResults | async).searchTerm}}</strong> with the current filters. Please try another search term or filter.
   </p>
 </ng-template>

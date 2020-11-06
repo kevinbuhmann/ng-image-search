@@ -11,6 +11,7 @@ export interface Image {
   title: string;
   url: string;
   thumbnailUrl: string;
+  licenseId: number;
 }
 
 export interface ImageSearchResults {

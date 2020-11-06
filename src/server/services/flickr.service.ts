@@ -29,6 +29,7 @@ export interface FlickrSearchResults {
       ispublic: number;
       isfriend: number;
       isfamily: number;
+      license: string;
     }[];
   };
   stat: string;
@@ -38,14 +39,16 @@ export interface FlickrSearchResults {
 export class FlickrService {
   constructor(private readonly httpService: HttpService) {}
 
-  search({ searchTerm, page, sort }: { searchTerm: string; page: number; sort: ImageSort }) {
+  search({ searchTerm, page, sort, licenseIds }: { searchTerm: string; page: number; sort: ImageSort; licenseIds: number[] }) {
     const requestQueryString: QueryString = {
       ...baseApiRequestQueryString,
       method: 'flickr.photos.search',
       text: searchTerm,
       sort,
       page,
-      safe_search: '1'
+      safe_search: '1',
+      license: licenseIds ? licenseIds.join() : undefined,
+      extras: 'license'
     };
 
     return this.httpService

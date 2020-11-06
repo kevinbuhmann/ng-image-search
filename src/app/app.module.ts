@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import {
   MatButtonModule,
   MatCardModule,
+  MatCheckboxModule,
   MatInputModule,
   MatProgressSpinnerModule,
   MatSelectModule,
@@ -39,6 +40,7 @@ const httpRetryStrategyProviders = [networkErrorRetryStrategyProvider, serverUna
     HttpRetryModule.forRoot(),
     MatButtonModule,
     MatCardModule,
+    MatCheckboxModule,
     MatInputModule,
     MatProgressSpinnerModule,
     MatSelectModule,
