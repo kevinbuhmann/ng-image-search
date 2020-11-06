@@ -6,7 +6,7 @@
     "lint": "ts-node ./build/lint.ts",
     "build": "ts-node ./build/build.ts",
     "test": "ts-node ./build/test.ts",
-    "deploy": "yarn run build && git push heroku head:master",
+    "deploy": "yarn run build && git push heroku head:master -f",
     "heroku-postbuild": "yarn run build --prod --no-lint --no-test"
   },
   "private": true,
