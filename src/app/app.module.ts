@@ -2,7 +2,14 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule, MatCardModule, MatInputModule, MatProgressSpinnerModule, MatToolbarModule } from '@angular/material';
+import {
+  MatButtonModule,
+  MatCardModule,
+  MatInputModule,
+  MatProgressSpinnerModule,
+  MatSelectModule,
+  MatToolbarModule
+} from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxInViewportModule } from '@ngx-lite/in-viewport';
@@ -34,6 +41,7 @@ const httpRetryStrategyProviders = [networkErrorRetryStrategyProvider, serverUna
     MatCardModule,
     MatInputModule,
     MatProgressSpinnerModule,
+    MatSelectModule,
     MatToolbarModule,
     AppRoutingModule
   ],

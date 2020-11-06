@@ -2,16 +2,16 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { map } from 'rxjs/operators';
 
 import { FlickrSearchResults, FlickrService } from './../services/flickr.service';
-import { Image, ImageSearchResults } from './image-search.dtos';
+import { Image, ImageSearchResults, ImageSort } from './image-search.dtos';
 
 @Controller('api/image-search')
 export class ImageSearchController {
   constructor(private readonly flickrService: FlickrService) {}
 
   @Get()
-  search(@Query('q') searchTerm: string, @Query('page') page: string) {
+  search(@Query('q') searchTerm: string, @Query('page') page: string, @Query('sort') sort: ImageSort) {
     return this.flickrService
-      .search({ searchTerm, page: +page })
+      .search({ searchTerm, page: +page, sort: sort || 'relevance' })
       .pipe(map(flickrSearchResults => convertSearchResults(searchTerm, +page, flickrSearchResults)));
   }
 }

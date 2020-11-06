@@ -1,6 +1,12 @@
-<form bp="margin-bottom" [formGroup]="form">
-  <mat-form-field bp="full-width">
+<form bp="grid margin-bottom" [formGroup]="form">
+  <mat-form-field bp="8@md full-width">
     <input matInput type="text" placeholder="Search" [formControlName]="controlNames.searchTerm" />
+  </mat-form-field>
+  <mat-form-field bp="4@md full-width">
+    <mat-label>Sort</mat-label>
+    <mat-select [formControlName]="controlNames.sort">
+      <mat-option *ngFor="let sortOption of sortOptions" [value]="sortOption.sort">{{sortOption.label}}</mat-option>
+    </mat-select>
   </mat-form-field>
 </form>
 

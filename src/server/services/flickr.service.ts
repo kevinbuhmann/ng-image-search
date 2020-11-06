@@ -1,6 +1,7 @@
 import { HttpService, Injectable } from '@nestjs/common';
 import { map } from 'rxjs/operators';
 
+import { ImageSort } from './.././image-search/image-search.dtos';
 import { environmentVariables } from './../environment-variables';
 import { toQueryString, QueryString } from './../helpers/api.helpers';
 
@@ -37,12 +38,12 @@ export interface FlickrSearchResults {
 export class FlickrService {
   constructor(private readonly httpService: HttpService) {}
 
-  search({ searchTerm, page }: { searchTerm: string; page: number }) {
+  search({ searchTerm, page, sort }: { searchTerm: string; page: number; sort: ImageSort }) {
     const requestQueryString: QueryString = {
       ...baseApiRequestQueryString,
       method: 'flickr.photos.search',
       text: searchTerm,
-      sort: 'relevance',
+      sort,
       page,
       safe_search: '1'
     };
