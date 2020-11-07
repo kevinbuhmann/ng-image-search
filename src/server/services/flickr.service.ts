@@ -1,5 +1,6 @@
 import { HttpService, Injectable } from '@nestjs/common';
-import { map } from 'rxjs/operators';
+import { EMPTY, Observable } from 'rxjs';
+import { expand, map, scan, skip } from 'rxjs/operators';
 
 import { ImageSort } from './.././image-search/image-search.dtos';
 import { environmentVariables } from './../environment-variables';
@@ -43,6 +44,10 @@ export class FlickrService {
   constructor(private readonly httpService: HttpService) {}
 
   search({ searchTerm, page, sort, licenseIds }: { searchTerm: string; page: number; sort: ImageSort; licenseIds: number[] }) {
+    if (isNaN(page)) {
+      return this.pagelessSearch({ searchTerm, sort, licenseIds });
+    }
+
     const requestQueryString: QueryString = {
       ...baseApiRequestQueryString,
       method: 'flickr.photos.search',
@@ -57,5 +62,27 @@ export class FlickrService {
     return this.httpService
       .get<FlickrSearchResults>(`${apiRoot}?${toQueryString(requestQueryString)}`)
       .pipe(map(response => response.data));
+  }
+
+  private pagelessSearch(searchOptions: { searchTerm: string; sort: ImageSort; licenseIds: number[] }): Observable<FlickrSearchResults> {
+    const maxPage = 10;
+
+    return this.search({ ...searchOptions, page: 1 }).pipe(
+      expand(results => (results.photos.page < maxPage ? this.search({ ...searchOptions, page: results.photos.page + 1 }) : EMPTY)),
+      scan((current, next) => {
+        const combinedSearchResults: FlickrSearchResults = {
+          photos: {
+            page: undefined,
+            pages: undefined,
+            perpage: undefined,
+            total: current.photos.total,
+            photo: [...current.photos.photo, ...next.photos.photo]
+          },
+          stat: undefined
+        };
+        return combinedSearchResults;
+      }),
+      skip(maxPage - 1)
+    );
   }
 }
