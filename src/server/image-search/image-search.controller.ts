@@ -11,7 +11,7 @@ export class ImageSearchController {
   @Get()
   search(@Query('q') searchTerm: string, @Query('page') page: string) {
     return this.flickrService
-      .search(searchTerm, +page)
+      .search({ searchTerm, page: +page })
       .pipe(map(flickrSearchResults => convertSearchResults(searchTerm, +page, flickrSearchResults)));
   }
 }

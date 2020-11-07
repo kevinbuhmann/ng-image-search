@@ -37,7 +37,7 @@ export interface FlickrSearchResults {
 export class FlickrService {
   constructor(private readonly httpService: HttpService) {}
 
-  search(searchTerm: string, page: number) {
+  search({ searchTerm, page }: { searchTerm: string; page: number }) {
     const requestQueryString: QueryString = {
       ...baseApiRequestQueryString,
       method: 'flickr.photos.search',
