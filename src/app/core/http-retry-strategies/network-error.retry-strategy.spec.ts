@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { NetworkStatusService } from '../services/network-status.service';
-
+import { NetworkStatusService } from './../services/network-status.service';
 import { mockNetworkStatusServiceProvider, MockNetworkStatusService } from './../services/network-status.service.mock';
 import { NetworkErrorRetryStrategy } from './network-error.retry-strategy';
 
